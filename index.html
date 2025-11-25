@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ağrı'nın Bilge Sesleri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .hero-banner {
+            width: 100%;
+            height: 550px;
+            background-image: url('agri-manzara.png');
+            background-size: cover;
+            background-position: center 25%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .hero-text {
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.8;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #666;
+        }
+
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.5rem 1rem;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .interviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .interview-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .interview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .interview-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .interview-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .interview-meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .interview-body {
+            padding: 1.5rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #555;
+            background: #f9f9f9;
+            padding: 1rem;
+            border-left: 4px solid #667eea;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-banner {
+                height: 300px;
+            }
+
+            .hero-text {
+                font-size: 1.2rem;
+            }
+            
+            .interviews-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎙️ Ağrı'nın Bilge Sesleri</h1>
+        <p>Kuşaklar Arasında Kaybolmayan Değerler Projesi - Sözlü Tarih Arşivi</p>
+    </div>
+
+    <div class="hero-banner">
+        <div class="hero-overlay">
+            <p class="hero-text">Ağrı'nın yaşlılarından dinlediğimiz hikayeler, onların deneyimleri ve değerleri bu arşivde yaşatılıyor.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <h3>20</h3>
+                <p>Görüşme</p>
+            </div>
+            <div class="stat-card">
+                <h3>71.8</h3>
+                <p>Ortalama Yaş</p>
+            </div>
+            <div class="stat-card">
+                <h3>450+</h3>
+                <p>Dakika Kayıt</p>
+            </div>
+            <div class="stat-card">
+                <h3>5</h3>
+                <p>Ana Tema</p>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Filtrele:</label>
+                <select id="themeFilter">
+                    <option value="all">Tüm Temalar</option>
+                    <option value="aile">Aile & Sevgi</option>
+                    <option value="saglik">Sağlık & Şükür</option>
+                    <option value="maneviyat">İnanç & Maneviyat</option>
+                    <option value="saygi">Saygı & Gelenek</option>
+                    <option value="kusak">Kuşak Farkı</option>
+                </select>
+                
+                <select id="genderFilter">
+                    <option value="all">Tüm Cinsiyetler</option>
+                    <option value="kadın">Kadın</option>
+                    <option value="erkek">Erkek</option>
+                </select>
+
+                <input type="text" id="searchBox" placeholder="Ara...">
+            </div>
+        </div>
+
+        <div class="interviews-grid" id="interviewsGrid"></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+const interviews = [
+    {
+        id: 1,
+        name: "Fatma Teyze",
+        age: 72,
+        gender: "kadın",
+        location: "Merkez",
+        theme: "aile",
+        date: "15.10.2025",
+        duration: "28 dk",
+        quote: "Evlat insanın dünyadaki en büyük dayanağıdır. Ben dokuz çocuk yetiştirdim, hiçbirine kıyamadım.",
+        summary: "Aile bağlarının önemi, çocuk yetiştirme deneyimleri ve kuşaklar arası ilişkiler üzerine derin bir sohbet.",
+        fullInterview: "Fatma Teyze 50 yıllık evlilik hayatında dokuz çocuk yetiştirmiş. 'Zamanında ekmek bulamadığımız günler oldu. Kocam tarlada çalışırdı, ben de evde çocuklara bakardım. Hiçbir zaman aç bırakmadım onları, her zaman bir şeyler bulurdum' diyor gözleri dolarak.\n\nÇocuklarının hepsinin okula gitmesini sağlamış. En büyük oğlu öğretmen, en küçüğü hemşire olmuş. 'Okumalarını çok istedim. Ben okuyamadım ama onlar okusun istedim. Şimdi hepsi iyi yerlerde, Allah razı olsun' diye ekliyor.\n\nTorunlarıyla ilişkisi çok güçlü. Her hafta sonu toplanıyorlar. 'Torunlarım gelince ev şenlik. Onlara hep hikaye anlatırım, eskiden nasıl yaşadığımızı. Bilsinler diye, unutmasınlar diye.'",
+        quotes: [
+            "Evlat insanın dünyadaki en büyük dayanağıdır. Ben dokuz çocuk yetiştirdim, hiçbirine kıyamadım.",
+            "Zamanında ekmek bulamadığımız günler oldu ama aç bırakmadım çocuklarımı.",
+            "En büyük sermayem çocuklarım. Onları yetiştirmek için canımı dişime taktım.",
+            "Torunlarım gelince yorgunluğum geçiyor. Onlara bakınca hayatımın anlamını görüyorum."
+        ],
+        qa: [
+            {q: "En zor anınız hangisiydi?", a: "En küçüğüm hastalandığında param yoktu. Komşular topladı para, hastaneye götürebildik. O gün hiç unutmam."},
+            {q: "Çocuklarınıza en çok neyi öğretmek istediniz?", a: "Dürüst olmalarını, çalışkan olmalarını. Kimseye muhtaç olmasınlar istedim."},
+            {q: "Bugünün gençlerine ne söylersiniz?", a: "Ailelerine sahip çıksınlar. Aile olmadan insan hiçbir şeydir."}
+        ],
+        tags: ["aile", "çocuk yetiştirme", "aile bağları"],
+        values: ["Aile (5/5)", "Sevgi (5/5)", "Sabır (4/5)"]
+    },
+    {
+        id: 2,
+        name: "Mehmet Amca",
+        age: 69,
+        gender: "erkek",
+        location: "Patnos",
+        theme: "saglik",
+        date: "16.10.2025",
+        duration: "25 dk",
+        quote: "Sağlık olmayınca ne malın ne makamın anlamı kalıyor. Elhamdülillah, bugüne kadar Allah sağlık verdi.",
+        summary: "Sağlığın değeri, yaşlılıkta sağlıklı kalmanın önemi ve şükür duygusu.",
+        fullInterview: "Mehmet Amca 45 yıl çiftçilik yapmış. Tarlada çalışmanın sağlığını koruduğuna inanıyor. 'Hep hareket halinde oldum. Tembel olmadım hiç. Belki ondan sağlığım yerinde' diyor.\n\nGeçen sene ameliyat olmuş ama çabuk iyileşmiş. 'Doktor şaşırdı, bu yaşta bu kadar çabuk iyileşmene dedi. Dedim ki doktor, biz köylüyüz, dayanıklıyız' diye gülüyor.\n\nSağlıklı yaşamın sırrını sorunca basit cevap veriyor: 'Doğal yiyecekler, bol hareket, stressiz yaşam. Kimseyle kavga etmedim, kırgınlık taşımadım. Huzurlu yaşadım.'",
+        quotes: [
+            "Sağlık olmayınca ne malın ne makamın anlamı kalıyor.",
+            "Allah sağlık verdi, bundan büyük zenginlik yok.",
+            "Tarlada çalıştım 45 yıl, belki ondan sağlığım yerinde.",
+            "Doğal yaşadık, kimyasal bilmiyoruz. O yüzden sağlığımız iyi."
+        ],
+        qa: [
+            {q: "Sağlığınızın sırrı nedir?", a: "Hep hareketli oldum. Tembel olmadım. Doğal yedim içtim."},
+            {q: "Hastaneye sık gider misiniz?", a: "Geçen sene ameliyat oldum, onun dışında şükür gitmem."},
+            {q: "Gençlere sağlık konusunda tavsiyeniz?", a: "Hareketli olsunlar, hazır yemek yemesinler. Doğal yaşasınlar."}
+        ],
+        tags: ["sağlık", "şükür", "yaşlılık"],
+        values: ["Sağlık (5/5)", "Şükür (5/5)", "Maneviyat (4/5)"]
+    },
+    {
+        id: 3,
+        name: "Ayşe Nine",
+        age: 75,
+        gender: "kadın",
+        location: "Doğubayazıt",
+        theme: "maneviyat",
+        date: "18.10.2025",
+        duration: "30 dk",
+        quote: "İnançsız insan köksüz ağaç gibidir. İman olmazsa hiçbir şey ayakta durmaz.",
+        summary: "Dini değerlerin hayattaki yeri, manevi huzur ve inanç sistemi.",
+        fullInterview: "Ayşe Nine 7 yaşından beri namaz kılıyormuş. 'Annem öğretti. Elimi tuttu, gösterdi nasıl kılınır diye. O günden beri hiç bırakmadım' diyor. Hayatının her anında Allah'ı düşündüğünü, her işinde O'na tevekkül ettiğini söylüyor.\n\nZor zamanlarında imanının kendisine güç verdiğini anlatıyor. 'Oğlum hasta olduğunda çok dua ettim. Allah kabul etti, şifa verdi. İman olmasaydı o günleri nasıl geçirirdim bilmiyorum.'\n\nGenç kuşağın inanç konusunda zayıf olduğunu düşünüyor. 'Gençler camiye gitmiyor, namaz kılmıyor. Dünya onları aldı götürdü. Ama insan dünya için yaratılmadı, ahiret için yaratıldı.'",
+        quotes: [
+            "İnançsız insan köksüz ağaç gibidir. İman olmazsa hiçbir şey ayakta durmaz.",
+            "Her sabah namaza kalktığımda Allah'a şükrediyorum. Bana bir gün daha ömür verdi diye.",
+            "İman insanın içindeki en büyük hazine. Para pul geçici, iman kalıcı.",
+            "Zorluklarda dua ettim, Allah hep yanımda oldu."
+        ],
+        qa: [
+            {q: "İmanınız size ne kazandırdı?", a: "Huzur kazandırdı. Ne olursa olsun Allah var diye biliyorum, korkum yok."},
+            {q: "En çok hangi ibadeti seversiniz?", a: "Namaz. Beş vakit namaz benim için nefes gibi. Kılmayınca eksik hissediyorum."},
+            {q: "Gençlere ne söylemek istersiniz?", a: "Allah'ı unutmasınlar. Dünya geçici, ahiret kalıcı. Dinine sahip çıksınlar."}
+        ],
+        tags: ["maneviyat", "inanç", "dini değerler"],
+        values: ["Maneviyat (5/5)", "İnanç (5/5)", "Huzur (4/5)"]
+    },
+    {
+        id: 4,
+        name: "Ali Dede",
+        age: 78,
+        gender: "erkek",
+        location: "Merkez",
+        theme: "saygi",
+        date: "20.10.2025",
+        duration: "22 dk",
+        quote: "Eskiden büyük sözü dinlenirdi. Şimdi gençler başlarına buyruk, kimseyi saymıyorlar.",
+        summary: "Geleneksel değerler, saygı kavramı ve kuşaklar arası anlayış farkı.",
+        fullInterview: "Ali Dede eskiden büyüklere nasıl saygı gösterildiğini anlatıyor. 'Biz babamızın yanında sigara içemezdik. Ayakta dururduk, oturmazdık. Şimdi öyle mi? Gençler rahat rahat oturuyor, sigara içiyor babasının yanında.'\n\nSaygının sadece aileden değil, toplumun her kesiminde olduğunu söylüyor. 'Köyde yaşlılar geçerdi, herkes ayağa kalkardı. Hocaya saygı vardı, öğretmene saygı vardı. Şimdi o saygı kayboldu.'\n\nAma değişimi de anlayışla karşılamaya çalışıyor. 'Zamanlar değişti tabi. Ama bazı şeyler değişmemeli. Saygı, edep, terbiye bunlar kalmalı. Yoksa toplum dağılır.'",
+        quotes: [
+            "Eskiden büyük sözü dinlenirdi. Şimdi gençler başlarına buyruk, kimseyi saymıyorlar.",
+            "Babamın yanında sigara içemezdik. Şimdi oğlum yanımda içiyor, hiçbir şey diyemiyorum.",
+            "Saygı toplumun temelidir. Saygı giderse her şey gider.",
+            "Gençlere kızmıyorum ama üzülüyorum. Bizim gibi değiller."
+        ],
+        qa: [
+            {q: "En çok neyi özlüyorsunuz?", a: "Eski saygıyı özlüyorum. Büyüklere değer verilirdi, şimdi yok."},
+            {q: "Gençlerle aranız nasıl?", a: "İyi aslında. Torunlarımla konuşuyorum ama onlar beni anlamıyor bazen."},
+            {q: "Ne tavsiye edersiniz gençlere?", a: "Büyüklerine saygı göstersinler. Bir gün kendileri de yaşlanacaklar."}
+        ],
+        tags: ["saygı", "gelenek", "büyüklere saygı"],
+        values: ["Saygı (5/5)", "Gelenek (5/5)", "Namus (4/5)"]
+    },
+    {
+        id: 5,
+        name: "Zeynep Teyze",
+        age: 68,
+        gender: "kadın",
+        location: "Eleşkirt",
+        theme: "kusak",
+        date: "22.10.2025",
+        duration: "26 dk",
+        quote: "Gençler aceleci, biz sabırlıydık. Her şeyi hemen istiyorlar, beklemesini bilmiyorlar.",
+        summary: "Kuşak farklılıkları, sabır değeri ve modern yaşamın etkileri.",
+        fullInterview: "Zeynep Teyze kuşaklar arasındaki farkı sabır üzerinden anlatıyor. 'Biz bir şey istediğimizde yıllarca beklerdik. Mesela kocam çalıştı çalıştı, 10 yıl sonra ev aldık. Şimdi gençler hemen ev istiyor, kredi çekiyor, borçlanıyor.'\n\nTeknolojinin gençleri değiştirdiğini düşünüyor. 'Hep telefonla meşguller. Biz yüz yüze konuşurduk, şimdi mesajlaşıyorlar. Aynı evde oturuyorlar ama birbirleriyle telefonda konuşuyorlar.'\n\nAma gençlerin de haklı olduğu yönler olduğunu kabul ediyor. 'Dünya zor şimdi. Bizim zamanımız daha basitti. Her şey pahalı, hayat zor. Onları anlıyorum aslında.'",
+        quotes: [
+            "Gençler aceleci, biz sabırlıydık. Her şeyi hemen istiyorlar, beklemesini bilmiyorlar.",
+            "Biz 10 yıl bekledik ev almak için. Şimdi hemen istiyorlar, beklemeyi bilmiyorlar.",
+            "Telefon geldi, yüz yüze konuşma gitti. Herkes ekrana bakıyor.",
+            "Gençleri suçlamıyorum. Dünya değişti, onlar da değişti."
+        ],
+        qa: [
+            {q: "En büyük kuşak farkı nedir?", a: "Sabır. Bizde sabır vardı, onlarda yok. Her şeyi hemen istiyorlar."},
+            {q: "Teknoloji hakkında ne düşünüyorsunuz?", a: "İyi yanları var ama insanları birbirinden uzaklaştırdı."},
+            {q: "Gençlere ne öğretmek istersiniz?", a: "Sabırlı olmayı. Beklemesini bilmeyi. Acelenin faydası yok."}
+        ],
+        tags: ["kuşak farkı", "sabır", "modern yaşam"],
+        values: ["Sabır (5/5)", "Anlayış (4/5)", "Gelenek (4/5)"]
+    },
+    {
+        id: 6,
+        name: "Hasan Ağa",
+        age: 74,
+        gender: "erkek",
+        location: "Hamur",
+        theme: "aile",
+        date: "24.10.2025",
+        duration: "27 dk",
+        quote: "Aile ocağı sönmez. Bir evlat dünyada varsa, insan yalnız değildir.",
+        summary: "Aile birliği, nesil sorumluluğu ve akrabalık ilişkileri.",
+        fullInterview: "Hasan Ağa altı çocuk büyütmüş. Hepsi şimdi farklı şehirlerde yaşıyor ama her bayramda köye geliyorlar. 'Evlatlarım yanımda olmasa da biliyorum ki düşünüyorlar beni. Telefon ediyorlar her gün, hal hatır soruyorlar.'\n\nAile birliğinin önemini vurguluyor. 'Kardeşlerim var, hepimiz birbirimize bakıyoruz. Birinin derdi olsa hepimiz koşarız. Bu aile bağı bizim için her şeyden önemli.'\n\nTorunlarının köy yaşamını bilmesini istiyor. 'Torunlarım şehirde büyüdü ama ben onlara köy hayatını anlatıyorum. Buraya geldiklerinde tarlaya götürüyorum, hayvanları gösteriyorum. Köklerini unutmasınlar istiyorum.'",
+        quotes: [
+            "Aile ocağı sönmez. Bir evlat dünyada varsa, insan yalnız değildir.",
+            "Evlatlarım uzakta ama her gün telefon ediyor. Bu bana yetiyor.",
+            "Kardeşlik önemli. Birbirimize hep destek oluruz.",
+            "Torunlarıma köklerini öğretiyorum. Nereden geldiklerini bilsinler."
+        ],
+        qa: [
+            {q: "Çocuklarınızın uzakta olması zor mu?", a: "Zor tabi ama anlıyorum. İş için gittiler. Önemli olan unutmamaları bizi."},
+            {q: "Aile birliğini nasıl korudunuz?", a: "Hep birbirimize destek olduk. Kavga etmedik, kırgınlık yapmadık."},
+            {q: "Torunlarınıza ne öğretmek istiyorsunuz?", a: "Ailelerini sevsinler, büyüklerine saygı göstersinler, köklerini unutmasınlar."}
+        ],
+        tags: ["aile", "evlat", "akrabalık"],
+        values: ["Aile (5/5)", "Sorumluluk (5/5)", "Bağlılık (4/5)"]
+    },
+    {
+        id: 7,
+        name: "Emine Nine",
+        age: 71,
+        gender: "kadın",
+        location: "Taşlıçay",
+        theme: "maneviyat",
+        date: "25.10.2025",
+        duration: "24 dk",
+        quote: "Namaz kılmayan insan Allah'ı unutmuş demektir. Ben 60 yıldır hiç kaçırmadım.",
+        summary: "İbadet hayatı, manevi disiplin ve dini sorumluluğun önemi.",
+        fullInterview: "Emine Nine 11 yaşından beri namaz kılıyor. 'İlk namazımı hatırlıyorum. Çok heyecanlıydım. Annem yanımdaydı, gösterdi nasıl kılınır diye. O günden bugüne hiç bırakmadım.'\n\nNamazın kendisine huzur verdiğini anlatıyor. 'Sabah namazını kıldığımda günüm güzel başlıyor. Namaz benim için bir dinlenme, Allah ile konuşma zamanı. Her derdimi O'na anlatıyorum.'\n\nGençlerin namaz kılmadığını görünce üzülüyor. 'Camiler boş, gençler yok. Halbuki namaz çok güzel, insan huzur buluyor. Keşke anlasalar.'",
+        quotes: [
+            "Namaz kılmayan insan Allah'ı unutmuş demektir. Ben 60 yıldır hiç kaçırmadım.",
+            "Sabah namazı benim için günün en güzel anı. Allah ile baş başa kalıyorum.",
+            "Namaz kılınca tüm dertlerim hafifliyor. Sanki bir yük düşüyor üstümden.",
+            "Gençlere namazı anlatıyorum ama dinlemiyorlar. Çok üzülüyorum."
+        ],
+        qa: [
+            {q: "Namaz size ne kazandırdı?", a: "Huzur kazandırdı. Disiplin kazandırdı. Allah'a yakınlık hissediyorum."},
+            {q: "Hiç kaçırdığınız oldu mu?", a: "Hasta olduğumda bile kıldım. Oturarak kıldım ama kıldım."},
+            {q: "Gençlere ne söylemek istersiniz?", a: "Namaza başlasınlar. Bir kere denesinler, huzuru görsünler."}
+        ],
+        tags: ["ibadet", "namaz", "manevi disiplin"],
+        values: ["Maneviyat (5/5)", "Disiplin (5/5)", "İnanç (5/5)"]
+    },
+    {
+        id: 8,
+        name: "İbrahim Dede",
+        age: 80,
+        gender: "erkek",
+        location: "Diyadin",
+        theme: "saygi",
+        date: "27.10.2025",
+        duration: "20 dk",
+        quote: "Namus mertliğin temelidir. Namuslu insan herkesin gözünde değerlidir.",
+        summary: "Onur ve namus kavramları, toplumsal itibar ve erkeklik rolleri.",
+        fullInterview: "İbrahim Dede namus ve onur kavramlarını hayatının merkezi olarak görüyor. 'Bizim için namus her şeyden önemli. Namusunu koruyamayan adam değildir. Ben 80 yaşıma geldim, kimseye karşı namusumu lekeleyecek bir şey yapmadım.'\n\nKöyde saygın bir insan olarak biliniyor. 'Beni herkes tanır, saygı duyar. Çünkü dürüst yaşadım, haksızlık yapmadım. Kimsenin hakkını yemedim.'\n\nGençlerin namus konusunda gevşek olduğunu düşünüyor. 'Eskiden bir söz verirdin, ölsen de tutardın. Şimdi sözün değeri kalmadı. Ama namus bitmez, bitmemeli de.'",
+        quotes: [
+            "Namus mertliğin temelidir. Namuslu insan herkesin gözünde değerlidir.",
+            "80 yaşıma geldim, kimseye karşı namusumu lekeleyecek bir şey yapmadım.",
+            "Bir söz verirsen tutacaksın. Ölsen de tutacaksın. Bu erkekliğin gereği.",
+            "Namus bitmez, bitmemeli de. Toplum namusla ayakta durur."
+        ],
+        qa: [
+            {q: "Namus sizin için ne ifade ediyor?", a: "Her şey. Namusum olmasa ben kimim? Hiçim."},
+            {q: "Namuslu olmak zor mu?", a: "Zor değil. Dürüst olmak, doğru söylemek yeter. Basit aslında."},
+            {q: "Gençlere ne söylersiniz?", a: "Namuslarına sahip çıksınlar. Sözlerinin eri olsunlar."}
+        ],
+        tags: ["namus", "onur", "mertlik"],
+        values: ["Namus (5/5)", "Onur (5/5)", "İtibar (5/5)"]
+    },
+    {
+        id: 9,
+        name: "Hatice Teyze",
+        age: 67,
+        gender: "kadın",
+        location: "Merkez",
+        theme: "aile",
+        date: "28.10.2025",
+        duration: "29 dk",
+        quote: "Anne olmak Allah vergisi bir nimet. Evladım için canımı veririm.",
+        summary: "Annelik deneyimi, fedakarlık ve çocuk sevgisi.",
+        fullInterview: "Hatice Teyze beş çocuk yetiştirmiş. 'Annelik kolay değil ama çok güzel. Her sabah onların yüzünü görmek için uyanıyordum. Şimdi torunlarım var, onlar için uyanıyorum' diyor gülümseyerek.\n\nÇocukları için her türlü fedakarlığı yapmış. 'Kendi yemeden onları doyurdum. Kendi giyinmeden onları giydirdim. Anne böyle bir şey, evladı için her şeyi yapar.'\n\nAnneliğin en zor yanını sorduğumuzda 'Korkular' diyor. 'Çocuğun hastalandığında öyle bir korku ki anlatamam. Ama Allah hep korudu, şükür hepsi sağlıklı büyüdü.'",
+        quotes: [
+            "Anne olmak Allah vergisi bir nimet. Evladım için canımı veririm.",
+            "Kendi yemeden çocuklarımı doyurdum. Anne böyle bir şey.",
+            "Çocuğun hasta olunca dünya başına yıkılıyor. Ama Allah koruyor.",
+            "Torunlarım benim ikinci baharım. Onlara bakınca gençleşiyorum."
+        ],
+        qa: [
+            {q: "Anneliğin en güzel yanı nedir?", a: "Sevgi. Seni koşulsuz seven bir varlık büyütüyorsun."},
+            {q: "En zor anınız hangisiydi?", a: "Küçük oğlum hastalandığında. Hastanede bekledim günlerce."},
+            {q: "Annelere tavsiyeniz var mı?", a: "Sabırlı olsunlar. Çocuklar büyür, geçer. Ama anılar kalır."}
+        ],
+        tags: ["annelik", "fedakarlık", "sevgi"],
+        values: ["Aile (5/5)", "Sevgi (5/5)", "Fedakarlık (5/5)"]
+    },
+    {
+        id: 10,
+        name: "Mustafa Amca",
+        age: 73,
+        gender: "erkek",
+        location: "Patnos",
+        theme: "kusak",
+        date: "30.10.2025",
+        duration: "23 dk",
+        quote: "Bizim zamanımızda telefon yoktu, yüz yüze konuşurduk. Şimdi herkes ekrana bakıyor.",
+        summary: "Teknolojinin etkisi, iletişim değişimi ve nostalji.",
+        fullInterview: "Mustafa Amca teknolojinin hayata girişini merakla izlemiş. 'İlk televizyonu 1980'lerde gördüm. Köyde bir tane vardı, herkes o eve gidip izlerdi. Şimdi her evde var, cep telefonunda bile var.'\n\nTelefonların insanları değiştirdiğini düşünüyor. 'Eskiden komşuya giderdik sohbet ederdik. Şimdi telefona mesaj atıyoruz. Yüz yüze konuşma kalmadı. İnsan sesini bile duymuyor artık.'\n\nAma teknolojinin faydasını da kabul ediyor. 'Oğlum İstanbul'da, her gün görüntülü konuşuyoruz. Bu güzel. Eskiden ay ay göremezdik.'",
+        quotes: [
+            "Bizim zamanımızda telefon yoktu, yüz yüze konuşurduk. Şimdi herkes ekrana bakıyor.",
+            "İlk televizyonu gördüğümde çok şaşırmıştım. Sihir gibi gelmişti.",
+            "Teknoloji güzel ama insanları birbirinden uzaklaştırdı.",
+            "Oğlumu her gün görüyorum telefonda. Bu çok güzel bir şey."
+        ],
+        qa: [
+            {q: "Teknoloji hakkında ne düşünüyorsunuz?", a: "İyi ve kötü yanları var. Uzaktakileri yakın etti ama yakındakileri uzaklaştırdı."},
+            {q: "Siz telefon kullanıyor musunuz?", a: "Evet, torunum öğretti. Video görüşme yapıyorum, mesaj atıyorum."},
+            {q: "Eskiden mi şimdi mi daha iyiydi?", a: "Her dönemin güzelliği var. Ama yüz yüze sohbet özleniyor."}
+        ],
+        tags: ["teknoloji", "iletişim", "geçmiş"],
+        values: ["Samimi İletişim (5/5)", "Gelenek (4/5)"]
+    },
+    {
+        id: 11,
+        name: "Gülsüm Nine",
+        age: 76,
+        gender: "kadın",
+        location: "Doğubayazıt",
+        theme: "saglik",
+        date: "01.11.2025",
+        duration: "21 dk",
+        quote: "Sağlıklı olmak en büyük zenginlik. Param olmasın ama sağlığım olsun.",
+        summary: "Sağlık bilinci, hastalıklarla mücadele ve yaşam kalitesi.",
+        fullInterview: "Gülsüm Nine 10 yıl önce ciddi bir ameliyat geçirmiş. 'O zaman anladım sağlığın kıymetini. Hastanede yatarken para pul hiçbir şey ifade etmiyor, sadece sağlık önemli oluyor.'\n\nSağlıklı yaşam için basit kuralları var. 'Hep hareket halindeyim. Bahçeyle uğraşıyorum, eve bakıyorum. Doğal yiyoruz, bahçeden topluyoruz. Kimyasal yok bizde.'\n\nYaşlılıkta sağlıklı kalmanın sırrını sorduğumuzda 'Mutlu olmak' diyor. 'Stres olmayınca insan hasta olmuyor. Ben hep gülümsemeye çalışırım.'",
+        quotes: [
+            "Sağlıklı olmak en büyük zenginlik. Param olmasın ama sağlığım olsun.",
+            "Hastanede yatarken anladım, para hiçbir şey, sağlık her şey.",
+            "Hep hareket halindeyim. Hareket sağlık demek.",
+            "Doğal yiyoruz, kimyasal bilmiyoruz. O yüzden sağlığımız yerinde."
+        ],
+        qa: [
+            {q: "Sağlığınızın sırrı nedir?", a: "Hareket, doğal beslenme ve mutlu olmak. Üç altın kural."},
+            {q: "Ameliyat sonrası hayatınız değişti mi?", a: "Evet, her güne şükür ederek başlıyorum artık."},
+            {q: "Gençlere sağlık konusunda tavsiyeniz?", a: "Sağlıklarına dikkat etsinler. Gençlikte sağlık var sanıyorlar ama sonra pişman oluyorlar."}
+        ],
+        tags: ["sağlık", "zenginlik", "yaşam kalitesi"],
+        values: ["Sağlık (5/5)", "Şükür (4/5)", "Yaşam Kalitesi (4/5)"]
+    },
+    {
+        id: 12,
+        name: "Ahmet Dede",
+        age: 77,
+        gender: "erkek",
+        location: "Eleşkirt",
+        theme: "maneviyat",
+        date: "03.11.2025",
+        duration: "26 dk",
+        quote: "Kur'an okuyan ev bereketlidir. Evimizde her akşam Kur'an sesi eksik olmaz.",
+        summary: "Kur'an öğretimi, dini ritüeller ve aile içi ibadet.",
+        fullInterview: "Ahmet Dede hafız. Gençliğinde Kur'an ezberlemiş. 'O zamanlar çok zor şartlarda ezberledim. Ama şimdi çok mutluyum, çünkü Kur'an her zaman yanımda.'\n\nTorunlarına Kur'an öğretiyor. 'Her hafta sonu torunlarım geliyor, onlara Kur'an okumayı öğretiyorum. Küçükler çabuk öğreniyor, çok güzel okuyorlar.'\n\nKur'an okumanın bereket getirdiğine inanıyor. 'Kur'an okunan evde huzur olur, bereket olur. Bizim evimiz hep bereketli oldu, açlık görmedik.'",
+        quotes: [
+            "Kur'an okuyan ev bereketlidir. Evimizde her akşam Kur'an sesi eksik olmaz.",
+            "Hafız olmak benim için en büyük nimet. Kur'an her zaman kalbimde.",
+            "Torunlarıma Kur'an öğretiyorum. En güzel miras bu.",
+            "Kur'an okuyunca tüm dertlerim unutuyorum. Sanki Allah yanımda."
+        ],
+        qa: [
+            {q: "Hafız olmak nasıl bir duygu?", a: "Tarif edilemez. Allah'ın kelamını ezberlemek çok büyük bir onur."},
+            {q: "Torunlarınız ilgili mi?", a: "Evet çok. Küçükler hevesli, güzel okuyorlar maşallah."},
+            {q: "Kur'an okumanın faydası nedir?", a: "Huzur veriyor, bereket getiriyor, Allah'a yaklaştırıyor."}
+        ],
+        tags: ["Kur'an", "bereket", "aile ibadeti"],
+        values: ["Maneviyat (5/5)", "Bereket (4/5)", "Aile (4/5)"]
+    },
+    {
+        id: 13,
+        name: "Şerife Teyze",
+        age: 70,
+        gender: "kadın",
+        location: "Hamur",
+        theme: "aile",
+        date: "05.11.2025",
+        duration: "27 dk",
+        quote: "Torunlarım benim can damarım. Onları görünce yorgunluğum geçiyor.",
+        summary: "Torun sevgisi, büyükanne-torun ilişkisi ve aile içi roller.",
+        fullInterview: "Şerife Teyze sekiz torunu var. 'Her birinin adını hatırladığım gibi, özelliklerini de hatırlıyorum. Kim ne sever, kim ne yapmak ister, hepsini biliyorum' diyor sevgiyle.\n\nTorunlarına bakmanın kendisini gençleştirdiğini söylüyor. 'Onlarla oyun oynarken 70 yaşında olduğumu unutuyorum. Koşuyoruz, gülüyoruz, eğleniyoruz. Bana ilaç gibiler.'\n\nTorunlarına geleneksel değerleri öğretmeye çalışıyor. 'Onlara masallar anlatıyorum, yemek yapıyorum, el işi öğretiyorum. Büyükannelerini unutmasınlar istiyorum.'",
+        quotes: [
+            "Torunlarım benim can damarım. Onları görünce yorgunluğum geçiyor.",
+            "Sekiz torunum var, hepsi benim için paha biçilmez.",
+            "Torunlarla oynarken 70 yaşımı unutuyorum, 30 gibi hissediyorum.",
+            "Onlara masallar anlatıyorum, değerlerimizi öğretiyorum."
+        ],
+        qa: [
+            {q: "Torunlarınızla ne yapıyorsunuz?", a: "Oyun oynuyoruz, yemek yapıyoruz, masal anlatıyorum."},
+            {q: "En güzel anınız hangisi?", a: "İlk torunum doğduğunda. O hissi hiç unutamam."},
+            {q: "Büyükanne olmak nasıl bir duygu?", a: "Anne olmaktan farklı. Daha huzurlu, daha mutlu bir sevgi."}
+        ],
+        tags: ["torun sevgisi", "büyükanne", "aile"],
+        values: ["Aile (5/5)", "Sevgi (5/5)", "Mutluluk (4/5)"]
+    },
+    {
+        id: 14,
+        name: "Veli Ağa",
+        age: 72,
+        gender: "erkek",
+        location: "Taşlıçay",
+        theme: "saygi",
+        date: "07.11.2025",
+        duration: "24 dk",
+        quote: "Komşu komşunun külüne muhtaçtır. Bizim zamanımızda komşuluk çok önemliydi.",
+        summary: "Komşuluk ilişkileri, dayanışma ve toplumsal bağlar.",
+        fullInterview: "Veli Ağa 50 yıldır aynı evde yaşıyor. Komşularıyla ailesi gibi. 'Sağda solda aynı komşular. Birbirimizi kardeş gibi görüyoruz. Biri hastalanınca hep birlikte gidiyoruz hastaneye.'\n\nEskiden komşuluk ilişkilerinin daha güçlü olduğunu söylüyor. 'Eskiden komşu kapısı hep açıktı. İçeri girer çıkardık. Şimdi apartmanlarda yaşıyorlar, komşuyu tanımıyorlar bile.'\n\nKomşularına yardım etmekten mutlu oluyor. 'Geçen hafta komşunun ineği doğurdu, gittim yardım ettim. Bu çok doğal, böyle büyüdük biz.'",
+        quotes: [
+            "Komşu komşunun külüne muhtaçtır. Bizim zamanımızda komşuluk çok önemliydi.",
+            "50 yıldır aynı komşular. Aileden farkımız yok.",
+            "Eskiden komşu kapısı hep açıktı. Şimdi apartmanda komşuyu tanımıyorlar.",
+            "Komşuya yardım etmek sevap. Biz böyle öğrendik."
+        ],
+        qa: [
+            {q: "Komşularınızla ilişkiniz nasıl?", a: "Çok iyi. 50 yıldır yan yanayız, hiç kavga etmedik."},
+            {q: "Şehirde komşuluk farklı mı?", a: "Evet çok farklı. Apartmanda kimse kimseyi tanımıyor."},
+            {q: "İyi komşuluk için ne gerekli?", a: "Saygı, yardımlaşma ve içten olmak. Samimi olmak lazım."}
+        ],
+        tags: ["komşuluk", "dayanışma", "toplum"],
+        values: ["Komşuluk (5/5)", "Dayanışma (5/5)", "Toplum (4/5)"]
+    },
+    {
+        id: 15,
+        name: "Fadime Nine",
+        age: 79,
+        gender: "kadın",
+        location: "Diyadin",
+        theme: "kusak",
+        date: "09.11.2025",
+        duration: "22 dk",
+        quote: "Gençler çok rahat yaşıyor ama mutlu değiller. Biz zordu ama mutluyduk.",
+        summary: "Mutluluk kavramı, maddi refah ve manevi tatmin karşılaştırması.",
+        fullInterview: "Fadime Nine gençlik yıllarında çok zorluklar çekmiş. 'Ekmeği bulamazdık bazen. Ama yine de mutluyduk. Akşam komşular toplanır, sohbet ederdik. Şimdi her şey var ama kimse mutlu değil.'\n\nMutluluğun maddi şeylerle olmadığını düşünüyor. 'Gençlerin arabası var, telefonu var ama yüzlerinde gülümseme yok. Bizim hiçbir şeyimiz yoktu ama hep gülerdik.'\n\nBasit yaşamın mutluluk getirdiğine inanıyor. 'Az ile yetinmeyi bilirdik. Çok istemezdik. Eldekilere şükrederdik. Şimdi ne kadar olsa az.'",
+        quotes: [
+            "Gençler çok rahat yaşıyor ama mutlu değiller. Biz zordu ama mutluyduk.",
+            "Ekmeği bulamazdık bazen ama yine de gülerdik. Şimdi her şey var, kimse gülmüyor.",
+            "Mutluluk para ile olmuyor. Kalp huzuru lazım.",
+            "Az ile yetinmeyi bilirdik. Çok istemezdik, şükrederdik."
+        ],
+        qa: [
+            {q: "Mutluluğun sırrı nedir?", a: "Kanaat. Az ile yetinmek. Eldekilere şükretmek."},
+            {q: "Gençler neden mutsuz sizce?", a: "Çok istiyorlar, hiç şükretmiyorlar. Hep daha fazlası var sanıyorlar."},
+            {q: "Eskiden hayat daha mı güzeldi?", a: "Maddi olarak zor ama manevi olarak çok daha güzeldi."}
+        ],
+        tags: ["mutluluk", "refah", "kuşak farkı"],
+        values: ["Mutluluk (5/5)", "Kanaat (5/5)", "Anlayış (4/5)"]
+    },
+    {
+        id: 16,
+        name: "Ramazan Dede",
+        age: 81,
+        gender: "erkek",
+        location: "Merkez",
+        theme: "maneviyat",
+        date: "11.11.2025",
+        duration: "25 dk",
+        quote: "Hac gitmek nasip meselesi. Ben 75 yaşında gidebildim, çok şükür.",
+        summary: "Hac deneyimi, manevi yolculuk ve ibadet şükrü.",
+        fullInterview: "Ramazan Dede 75 yaşında hac yolculuğuna çıkmış. 'Yıllarca hayal ettim. Para biriktirdim, sağlık bekledim. Sonunda nasip oldu, gittim. Tarif edilemez bir duygu.'\n\nKabe'yi ilk gördüğü anı anlatırken gözleri doluyor. 'Kabe'yi görünce ağladım. Böyle bir an yaşayacağımı hiç düşünmemiştim. Allah'ın evi, oradaydım işte.'\n\nHac dönüşü hayatının değiştiğini söylüyor. 'Hacdan sonra her şey daha anlamlı geldi. Dünya geçici, ahiret kalıcı. Bunu orada daha iyi anladım.'",
+        quotes: [
+            "Hac gitmek nasip meselesi. Ben 75 yaşında gidebildim, çok şükür.",
+            "Kabe'yi görünce ağladım. Tarif edilemez bir duygu.",
+            "Hacdan sonra hayat daha anlamlı geldi. Her şey değişti.",
+            "Allah'ın evine gitmek her müslümanın rüyası. Benim rüyam gerçek oldu."
+        ],
+        qa: [
+            {q: "Hac nasıl bir deneyimdi?", a: "Hayatımın en güzel anıydı. Her anı unutulmaz."},
+            {q: "En çok ne etkiledi?", a: "Kabe'yi görmek. O an her şeyi unutuyorsun."},
+            {q: "Hacdan sonra değişen ne oldu?", a: "Dünyaya bakışım değişti. Her şey geçici, Allah kalıcı."}
+        ],
+        tags: ["hac", "manevi yolculuk", "şükür"],
+        values: ["Maneviyat (5/5)", "Şükür (5/5)", "İbadet (5/5)"]
+    },
+    {
+        id: 17,
+        name: "Havva Teyze",
+        age: 66,
+        gender: "kadın",
+        location: "Patnos",
+        theme: "aile",
+        date: "13.11.2025",
+        duration: "28 dk",
+        quote: "Evlilik sabırdır. 45 yıldır evliyiz, hep birlikte olduk.",
+        summary: "Evlilik hayatı, sabır ve uzun süreli birliktelik.",
+        fullInterview: "Havva Teyze 45 yıllık evli. 'Evlilik kolay değil. Sabır lazım, anlayış lazım, sevgi lazım. Ama en önemlisi sabır. Sabır olmazsa hiçbir evlilik yürümez.'\n\nZor zamanlardan bahsediyor. 'Kavga etmediğimiz değil. Ama hiç ayrılmayı düşünmedik. Sorunları konuşarak çözdük. Birbirimize küs kalmadık.'\n\nUzun evliliğin sırrını sorduğumuzda 'Saygı ve sabır' diyor. 'Eşine saygı göstereceksin, sabırlı olacaksın. Hemen vazgeçmeyeceksin. Zaman her şeyi hallediyor.'",
+        quotes: [
+            "Evlilik sabırdır. 45 yıldır evliyiz, hep birlikte olduk.",
+            "Kavga etmediğimiz değil ama hiç ayrılmayı düşünmedik.",
+            "Uzun evliliğin sırrı saygı ve sabır. Başka bir şey değil.",
+            "Eşimle büyüdük, yaşlandık. Artık birbirimizin parçasıyız."
+        ],
+        qa: [
+            {q: "45 yıllık evliliğin sırrı nedir?", a: "Saygı, sabır ve sevgi. Bu üçü olursa evlilik yürür."},
+            {q: "Hiç ayrılmayı düşündünüz mü?", a: "Hayır, hiç. Zorluklarımız oldu ama birlikte çözdük."},
+            {q: "Yeni evlenenlere tavsiyeniz?", a: "Sabırlı olsunlar. Hemen vazgeçmesinler. Zaman her şeyi halleder."}
+        ],
+        tags: ["evlilik", "sabır", "birliktelik"],
+        values: ["Aile (5/5)", "Sabır (5/5)", "Sadakat (5/5)"]
+    },
+    {
+        id: 18,
+        name: "Süleyman Amca",
+        age: 75,
+        gender: "erkek",
+        location: "Doğubayazıt",
+        theme: "saygi",
+        date: "15.11.2025",
+        duration: "23 dk",
+        quote: "Aşiret bağları bizim için çok önemli. Akraba olmayanla evlenmedik.",
+        summary: "Aşiret yapısı, kabile bağları ve geleneksel evlilik.",
+        fullInterview: "Süleyman Amca aşiret kültürüyle büyümüş. 'Biz aşirettik, herkes birbirini tanırdı. Akraba olmayanla evlenmezdik. Bu bizim geleneğimizdi.'\n\nAşiret yapısının faydalarından bahsediyor. 'Aşiret demek güvence demek. Birinin sorunu olsa herkes yardım ederdi. Yalnız kalmazdın hiç.'\n\nAma günümüzde aşiret yapısının zayıfladığını düşünüyor. 'Gençler şehre gitti, aşiret bağları koptu. Artık herkes kendi başına. Eski dayanışma kalmadı.'",
+        quotes: [
+            "Aşiret bağları bizim için çok önemli. Akraba olmayanla evlenmedik.",
+            "Aşiret demek güvence demek. Yalnız kalmazsın.",
+            "Gençler şehre gitti, aşiret bağları koptu. Eski dayanışma yok artık.",
+            "Akrabayla evlenmek gelenekti. Şimdi gençler farklı düşünüyor."
+        ],
+        qa: [
+            {q: "Aşiret yapısı nasıldı?", a: "Çok güçlüydü. Herkes birbirine bakardı, yardımlaşma vardı."},
+            {q: "Akrabayla evlilik zorunlu muydu?", a: "Zorunlu değil ama tercih edilirdi. Aile içinde evlilik daha güvenliydi."},
+            {q: "Şimdi aşiret yapısı nasıl?", a: "Zayıfladı. Gençler şehirde, eski bağlar koptu."}
+        ],
+        tags: ["aşiret", "akrabalık", "gelenek"],
+        values: ["Gelenek (5/5)", "Akraba Bağı (5/5)", "Toplum (4/5)"]
+    },
+    {
+        id: 19,
+        name: "Rukiye Nine",
+        age: 73,
+        gender: "kadın",
+        location: "Eleşkirt",
+        theme: "saglik",
+        date: "17.11.2025",
+        duration: "21 dk",
+        quote: "Şifa Allah'tan. Doktor tedavi eder ama şifa veren O'dur.",
+        summary: "Hastalık anlayışı, inanç ve tıbbi tedavi ilişkisi.",
+        fullInterview: "Rukiye Nine sağlık konusunda geleneksel ve modern yaklaşımları birleştiriyor. 'Hastalanınca doktora giderim ama dua da ederim. İkisi birlikte lazım. Doktor ilaç verir, Allah şifa verir.'\n\nGeçen yıl ciddi bir rahatsızlık geçirmiş. 'Çok kötüydüm, hastaneye yattım. Doktor çok çabaladı ama ben hep dua ettim. Allah şifa verdi, iyileştim.'\n\nİnanç ve tedavinin birlikte olması gerektiğine inanıyor. 'Dua edersin ama eli kolu da bağlı oturmazsın. Doktora gidersin, tedavini olursun. Allah sebep istiyor.'",
+        quotes: [
+            "Şifa Allah'tan. Doktor tedavi eder ama şifa veren O'dur.",
+            "Hastalanınca doktora giderim ama dua da ederim. İkisi birlikte lazım.",
+            "Geçen yıl çok kötüydüm. Doktor çabaladı, ben dua ettim. Allah şifa verdi.",
+            "Dua edersin ama doktora da gidersin. Allah sebep istiyor."
+        ],
+        qa: [
+            {q: "İnanç tedaviyi nasıl etkiliyor?", a: "Çok etkiliyor. İman olunca tedavi daha iyi sonuç veriyor."},
+            {q: "Sadece dua yeterli mi?", a: "Hayır, doktora da gitmek lazım. Dua ve tedavi birlikte."},
+            {q: "Hastalıkta en çok ne yardımcı oldu?", a: "İmanım ve ailem. İkisi olmasaydı dayanmazdım."}
+        ],
+        tags: ["şifa", "inanç", "sağlık"],
+        values: ["Sağlık (5/5)", "İnanç (5/5)", "Tevekkül (4/5)"]
+    },
+    {
+        id: 20,
+        name: "Yusuf Dede",
+        age: 82,
+        gender: "erkek",
+        location: "Hamur",
+        theme: "kusak",
+        date: "19.11.2025",
+        duration: "26 dk",
+        quote: "Gençlere tek tavsiyem: Büyüklerin sözünü dinleyin, yanlış yola sapmayın.",
+        summary: "Yaşlılardan gençlere öğütler, hayat dersleri ve tecrübe aktarımı.",
+        fullInterview: "Yusuf Dede 82 yaşında, üç kuşağı gören bir bilge. 'Ben çocuklarımı gördüm, torunlarımı gördüm, şimdi torunlarımın çocuklarını görüyorum. Hayat böyle, bir devir.'\n\nGençlere tavsiyelerini sıralıyor. 'Büyüklerinizi dinleyin. Biz hayatı yaşadık, tecrübe ettik. Sizin yaşayacaklarınızı biz yaşadık. Bizim sözümüzü dinlerseniz çok hata yapmazsınız.'\n\nHayat deneyimlerinden öğrendiklerini paylaşıyor. 'Hayat ders verdi bana. En önemli ders şu: Sabırlı ol, dürüst ol, ailenle ilgilen. Bunlar olursa hayat güzel.'",
+        quotes: [
+            "Gençlere tek tavsiyem: Büyüklerin sözünü dinleyin, yanlış yola sapmayın.",
+            "82 yaşıma geldim, üç kuşak gördüm. Hayat bir devir.",
+            "Biz hayatı yaşadık, tecrübe ettik. Sizin için kolaylaştırmak istiyoruz.",
+            "Hayat bana çok ders verdi: Sabırlı ol, dürüst ol, ailene bak."
+        ],
+        qa: [
+            {q: "Gençlere en önemli tavsiyeniz nedir?", a: "Sabırlı olsunlar, dürüst olsunlar, ailelerine sahip çıksınlar."},
+            {q: "Hayattan en çok ne öğrendiniz?", a: "Sabır. Hayatta en önemli şey sabır."},
+            {q: "82 yıllık hayatınızı nasıl özetlersiniz?", a: "Güzel geçti. Zorluklarımız oldu ama güzel geçti. Allah'a şükür."}
+        ],
+        tags: ["öğüt", "hayat dersi", "tecrübe"],
+        values: ["Bilgelik (5/5)", "Saygı (5/5)", "Deneyim (5/5)"]
+    }
+];
+
+function renderInterviews(filteredInterviews) {
+    const grid = document.getElementById('interviewsGrid');
+    grid.innerHTML = '';
+
+    filteredInterviews.forEach(interview => {
+        const card = document.createElement('div');
+        card.className = 'interview-card';
+        card.innerHTML = `
+            <div class="interview-header">
+                <h3>${interview.name} (${interview.age})</h3>
+                <div class="interview-meta">
+                    📍 ${interview.location} | 📅 ${interview.date} | ⏱️ ${interview.duration}
+                </div>
+            </div>
+            <div class="interview-body">
+                <div class="tags">
+                    ${interview.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+                <div class="quote">"${interview.quote}"</div>
+                <p style="margin-bottom: 1rem; color: #666;">${interview.summary}</p>
+                <button class="btn" onclick="showDetails(${interview.id})">Detayları Gör</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function showDetails(id) {
+    const interview = interviews.find(i => i.id === id);
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    
+    let quotesHtml = '';
+    if (interview.quotes && interview.quotes.length > 0) {
+        quotesHtml = `
+            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Önemli Alıntılar:</h3>
+            ${interview.quotes.map(q => `<div class="quote">"${q}"</div>`).join('')}
+        `;
+    }
+    
+    let qaHtml = '';
+    if (interview.qa && interview.qa.length > 0) {
+        qaHtml = `
+            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Soru & Cevap:</h3>
+            ${interview.qa.map(item => `
+                <div style="margin-bottom: 1rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                    <strong style="color: #667eea;">S: ${item.q}</strong>
+                    <p style="margin-top: 0.5rem;">C: ${item.a}</p>
+                </div>
+            `).join('')}
+        `;
+    }
+    
+    let fullInterviewHtml = '';
+    if (interview.fullInterview) {
+        fullInterviewHtml = `
+            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Tam Görüşme Metni:</h3>
+            <div style="line-height: 1.8; text-align: justify;">
+                ${interview.fullInterview.split('\n').map(p => `<p style="margin-bottom: 1rem;">${p}</p>`).join('')}
+            </div>
+        `;
+    }
+    
+    modalBody.innerHTML = `
+        <h2 style="color: #667eea; margin-bottom: 1rem;">${interview.name} - ${interview.age} yaş</h2>
+        <p><strong>📍 Yerleşim:</strong> ${interview.location}</p>
+        <p><strong>📅 Görüşme Tarihi:</strong> ${interview.date}</p>
+        <p><strong>⏱️ Süre:</strong> ${interview.duration}</p>
+        <p><strong>🎯 Ana Tema:</strong> ${interview.theme}</p>
+        
+        <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Öne Çıkan Değerler:</h3>
+        <ul>
+            ${interview.values.map(v => `<li>${v}</li>`).join('')}
+        </ul>
+        
+        ${fullInterviewHtml}
+        ${quotesHtml}
+        ${qaHtml}
+        
+        <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Görüşme Özeti:</h3>
+        <p>${interview.summary}</p>
+        
+        <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem;">Etiketler:</h3>
+        <div class="tags">
+            ${interview.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+document.getElementById('themeFilter').addEventListener('change', filterInterviews);
+document.getElementById('genderFilter').addEventListener('change', filterInterviews);
+document.getElementById('searchBox').addEventListener('input', filterInterviews);
+
+function filterInterviews() {
+    const theme = document.getElementById('themeFilter').value;
+    const gender = document.getElementById('genderFilter').value;
+    const search = document.getElementById('searchBox').value.toLowerCase();
+
+    let filtered = interviews;
+
+    if (theme !== 'all') {
+        filtered = filtered.filter(i => i.theme === theme);
+    }
+
+    if (gender !== 'all') {
+        filtered = filtered.filter(i => i.gender === gender);
+    }
+
+    if (search) {
+        filtered = filtered.filter(i => 
+            i.name.toLowerCase().includes(search) ||
+            i.quote.toLowerCase().includes(search) ||
+            i.summary.toLowerCase().includes(search) ||
+            i.tags.some(tag => tag.toLowerCase().includes(search))
+        );
+    }
+
+    renderInterviews(filtered);
+}
+
+document.querySelector('.close').addEventListener('click', () => {
+    document.getElementById('modal').style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('modal');
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+renderInterviews(interviews);
+
+    </script>
+</body>
+</html>
